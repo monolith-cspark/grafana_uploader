@@ -133,6 +133,7 @@
             "url": "http://mt0.google.com/vt/lyrs=s&hl=en&x={x}&y={y}&z={z}"
           },
           "name": "Layer 0",
+          "opacity": 0.1,
           "type": "xyz"
         },
         "controls": {
@@ -403,6 +404,7 @@
             "url": "http://mt0.google.com/vt/lyrs=s&hl=en&x={x}&y={y}&z={z}"
           },
           "name": "Layer 0",
+          "opacity": 0.1,
           "type": "xyz"
         },
         "controls": {
@@ -795,7 +797,7 @@
               "type": "time"
             },
             {
-              "name": "laser_id",
+              "name": "area",
               "type": "number"
             },
             {
