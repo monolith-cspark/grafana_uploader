@@ -176,10 +176,10 @@ class GrafanaAPI:
                 continue
 
             # 여기서 'path' 키에 CSV 경로
-            config_path = ds_details.get('jsonData', {}).get('path')
+            config_url = ds_details.get('url')
             
-            if config_path and config_path == csv_file_path:
-                print(f"일치하는 데이터 소스 발견! 이름: {ds_name}, UID: {ds_uid}, 경로: {config_path}")
+            if config_url and config_url == csv_file_path:
+                print(f"일치하는 데이터 소스 발견! 이름: {ds_name}, UID: {ds_uid}, 경로: {config_url}")
                 return ds_uid # 일치하는 데이터 소스의 UID 반환
 
         print(f"주어진 CSV 경로 '{csv_file_path}'에 해당하는 데이터 소스를 찾을 수 없습니다.")
