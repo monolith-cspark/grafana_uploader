@@ -19,3 +19,4 @@ MANIFEST
 csv/
 
 *.spec
+*.pyc
