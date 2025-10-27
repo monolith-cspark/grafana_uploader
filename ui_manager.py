@@ -8,6 +8,8 @@ from PySide6.QtWidgets import ( # 💡 PyQt6 -> PySide6로 변경
 from PySide6.QtGui import QIcon # PySide6 유지
 from PySide6.QtCore import Qt # 💡 PyQt6 -> PySide6로 변경
 
+from datetime import datetime
+import shutil
 import json
 from enum import IntEnum
 import uuid
@@ -519,8 +521,33 @@ class UI_Tool(QWidget):
 
         gr_name = self.gr_name_input.text().upper() # 대문자
         title = f'[{gr_name}]_{self.title_input.text()}' # [GR_ID]_Title
-        csv_path = util.normalize_path_for_grafana(self.csv_path_input.text())
+        original_csv_path = self.csv_path_input.text()
+
+        # csv 저장 경로 
+        csv_savedir = os.path.join(os.getcwd(), "csv")
+        os.makedirs(csv_savedir, exist_ok=True)
+
+        # 로그 시작시간 문자열
+        time_str = self.analysis_result.first_time  # "2025-10-23 15:39:31.065"
+
+        # datetime 객체로 변환
+        dt = datetime.strptime(time_str, "%Y-%m-%d %H:%M:%S.%f")
+
+        # 파일명용 문자열로 변환 (밀리초 버림)
+        file_name_time = dt.strftime("%Y-%m-%d_%H%M")
+
+        # 복사할 파일명
+        copy_csv_path = os.path.join(csv_savedir, f"{title}_{file_name_time}.csv")
+
+        try:
+            shutil.copy(original_csv_path, copy_csv_path)
+        except Exception as e:
+            self._show_messagebox(UI_NotiState.NOTI_ERR, f"CSV 파일 복사 실패: {e}")
+            self._set_button_states(True)
+            return
         
+        csv_path = util.normalize_path_for_grafana(absolute_path=copy_csv_path)
+
         if not self._check_input():
             self._set_button_states(True)
             return
@@ -933,6 +960,16 @@ all delete 버튼은 그라파나의 dash board, data source (csv 목록)을 모
         
     def click_delete_all_btn(self):
         
+        reply = QMessageBox.question(
+            self,
+            "삭제 확인",
+            "대시보드와 데이터 소스를 모두 삭제합니다.\n정말 진행하시겠습니까?",
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+        )
+
+        if reply != QMessageBox.StandardButton.Yes:
+            return
+
         if self._check_lock():
             return
         
